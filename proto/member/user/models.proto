@@ -1,0 +1,10 @@
+syntax = "proto3";
+package user;
+option go_package ="proto/member/user";
+
+message User {
+  string id = 1;
+  string user_name = 2;
+  string user_age = 3;
+}
+

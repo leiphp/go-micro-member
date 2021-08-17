@@ -43,6 +43,7 @@ func NewUserServiceEndpoints() []*api.Endpoint {
 
 type UserService interface {
 	Test(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UserResponse, error)
+	GetUserInfo(ctx context.Context, in *GetUserByIdRequest, opts ...client.CallOption) (*GetUserByIdResponse, error)
 }
 
 type userService struct {
@@ -67,15 +68,27 @@ func (c *userService) Test(ctx context.Context, in *UserRequest, opts ...client.
 	return out, nil
 }
 
+func (c *userService) GetUserInfo(ctx context.Context, in *GetUserByIdRequest, opts ...client.CallOption) (*GetUserByIdResponse, error) {
+	req := c.c.NewRequest(c.name, "UserService.GetUserInfo", in)
+	out := new(GetUserByIdResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
 	Test(context.Context, *UserRequest, *UserResponse) error
+	GetUserInfo(context.Context, *GetUserByIdRequest, *GetUserByIdResponse) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
 		Test(ctx context.Context, in *UserRequest, out *UserResponse) error
+		GetUserInfo(ctx context.Context, in *GetUserByIdRequest, out *GetUserByIdResponse) error
 	}
 	type UserService struct {
 		userService
@@ -90,4 +103,8 @@ type userServiceHandler struct {
 
 func (h *userServiceHandler) Test(ctx context.Context, in *UserRequest, out *UserResponse) error {
 	return h.UserServiceHandler.Test(ctx, in, out)
+}
+
+func (h *userServiceHandler) GetUserInfo(ctx context.Context, in *GetUserByIdRequest, out *GetUserByIdResponse) error {
+	return h.UserServiceHandler.GetUserInfo(ctx, in, out)
 }
