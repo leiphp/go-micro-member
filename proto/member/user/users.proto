@@ -1,7 +1,7 @@
 syntax = "proto3";
 package user;
 option go_package ="proto/member/user";
-//import "models.proto";
+import "models.proto";
 
 message UserRequest {
     string id=1;
@@ -22,10 +22,4 @@ message GetUserByIdResponse {
 service UserService {
     rpc Test(UserRequest) returns(UserResponse) {}
     rpc GetUserInfo(GetUserByIdRequest) returns(GetUserByIdResponse) {}
-}
-
-message User {
-    string id = 1;
-    string user_name = 2;
-    string user_age = 3;
 }

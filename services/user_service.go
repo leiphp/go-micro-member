@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	client2 "github.com/micro/go-micro/v2/client"
 	"log"
 	"lxtkj.cn/go-micro-member/proto/course/course"
@@ -15,9 +16,10 @@ type UserInterfaceService interface {
 }
 
 //初始化对象函数
-func NewUserService(c client2.Client) UserInterfaceService {
+func NewUserService(name string,c client2.Client) UserInterfaceService {
 	return &UserService{
 		client:c,
+		name:name,
 		shopMemberService:       repositories.NewBbsDiscuss(),
 		bbsPostService:          repositories.NewBbsPost(),
 	}
@@ -25,6 +27,7 @@ func NewUserService(c client2.Client) UserInterfaceService {
 
 type UserService struct {
 	client client2.Client
+	name string
 	shopMemberService 			repositories.BbsDiscussInterface     //商城会员服务
 	bbsPostService 			    repositories.BbsPostInterface        //社区帖子服务
 }
@@ -39,6 +42,7 @@ func(this *UserService) Test(ctx context.Context, req *user.UserRequest, rsp *us
 }
 
 func(this *UserService) GetUserInfo(ctx context.Context, req *user.GetUserByIdRequest, rsp *user.GetUserByIdResponse) error{
+	fmt.Println("进入GetUserInfo方法")
 	userArr := make([]*user.User, 0)
 	var userInfo user.User
 	userInfo.Id = req.UserId
